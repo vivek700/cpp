@@ -10,6 +10,7 @@
 #define ROWS 5          // Number of rows in the data matrix
 #define COLUMNS 5       // Number of columns in the data matrix
 #define COLORS_CHAR 10  // Maximum length (characters) for the color name
+#define MAX_FILENAME_LEN 50
 
 // Function prototypes
 int *create_sequence(FILE *fp);
@@ -34,6 +35,24 @@ void output_color(FILE *fp2, char *color);
 void free_data(int **data);
 void free_arrays(int *seq, int *header, int **data);
 
+void create_output_filename(char *input_filename, char output_filename[MAX_FILENAME_LEN])
+{
+    int len = strlen(input_filename);
+
+    char *dot = strchr(input_filename, '.');
+    if (dot != NULL)
+    {
+        strncpy(output_filename, input_filename, dot - input_filename);
+    }
+    else
+    {
+        strncpy(output_filename, input_filename, len);
+    }
+
+    strncat(output_filename, ".out", MAX_FILENAME_LEN - 1);
+    output_filename[MAX_FILENAME_LEN - 1] = '\0';
+}
+
 int main(int argc, char *argv[])
 {
 
@@ -54,10 +73,15 @@ int main(int argc, char *argv[])
         }
 
         int line_count = 1;
-        while (!feof(fp))
+
+        char output_filename[MAX_FILENAME_LEN];
+        create_output_filename(argv[1], output_filename);
+        printf("%s", output_filename);
+
+        while (!feof(fp)) // Loop until end of file (feof)
         {
             int *sequence = create_sequence(fp);
-            if (sequence != NULL)
+            if (sequence != NULL) // Check if sequence was read successfully
             {
                 int *header = create_header(sequence);
                 int **data = create_data(sequence);
@@ -66,7 +90,8 @@ int main(int argc, char *argv[])
                 int ID = compute_id(data, valid);
                 char *color = get_color(ID);
 
-                FILE *fp2 = fopen("rfid_data_1.out", "a");
+                // Open output file in append mode ("a")
+                FILE *fp2 = fopen(output_filename, "a");
                 if (fp2 == NULL)
                 {
                     printf("Error: Could not open %s for writing.\n", "rfid_data_1.out");
@@ -79,7 +104,7 @@ int main(int argc, char *argv[])
                 output_color(fp2, color);
                 free(color);
 
-                free_arrays(sequence, header, data);
+                free_arrays(sequence, header, data); // Free memory before next iteration
                 fclose(fp2);
 
                 line_count++;
