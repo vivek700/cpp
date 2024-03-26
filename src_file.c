@@ -3,13 +3,15 @@
 #include <string.h>
 #include <math.h>
 
-#define MAX_SEQUENCE 34
-#define HEADER 9
-#define DATA 25
-#define ROWS 5
-#define COLUMNS 5
-#define COLORS_CHAR 10
+// Define constants for program parameters
+#define MAX_SEQUENCE 34 // Maximum length of the sequence data
+#define HEADER 9        // Number of elements in the header
+#define DATA 25         // Number of elements in the data (excluding parity bits)
+#define ROWS 5          // Number of rows in the data matrix
+#define COLUMNS 5       // Number of columns in the data matrix
+#define COLORS_CHAR 10  // Maximum length (characters) for the color name
 
+// Function prototypes
 int *create_sequence(FILE *fp);
 int *create_header(int *seq);
 int **create_data(int *seq);
@@ -35,6 +37,7 @@ void free_arrays(int *seq, int *header, int **data);
 int main(int argc, char *argv[])
 {
 
+    // Check for correct number of arguments
     if (argc != 2)
     {
         printf("Error: You must specify an input file name: %s <input file>\n", argv[0]);
@@ -91,6 +94,8 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+// function definitions
+// function for creating sequence
 int *create_sequence(FILE *fp)
 {
 
@@ -115,6 +120,8 @@ int *create_sequence(FILE *fp)
     }
     return data;
 }
+
+// functions for creating header
 int *create_header(int *seq)
 {
 
@@ -131,6 +138,8 @@ int *create_header(int *seq)
     }
     return header;
 }
+
+// functions for creating data
 int **create_data(int *seq)
 {
 
@@ -159,6 +168,8 @@ int **create_data(int *seq)
     return data;
 }
 
+// validation functions
+// function for sequence validation
 int validate_sequence(int *seq, int **data)
 {
     if (validate_header(seq) && validate_data(data))
@@ -167,6 +178,7 @@ int validate_sequence(int *seq, int **data)
         return 0;
 }
 
+// function for header validation
 int validate_header(int *seq)
 {
 
@@ -179,6 +191,8 @@ int validate_header(int *seq)
     }
     return 1;
 }
+
+// function for data validation
 int validate_data(int **data)
 {
 
@@ -198,6 +212,7 @@ int validate_data(int **data)
     }
 };
 
+// function for validation of row and column
 int validate_row(int **data, int row)
 {
     int sum = 0;
@@ -211,6 +226,8 @@ int validate_row(int **data, int row)
     else
         return 0;
 }
+
+// function for validation of column
 int validate_column(int **data, int column)
 {
 
@@ -226,6 +243,7 @@ int validate_column(int **data, int column)
         return 0;
 }
 
+// function for computing ID
 int compute_id(int **data, int valid)
 {
     if (valid)
@@ -247,6 +265,7 @@ int compute_id(int **data, int valid)
     }
 }
 
+// function for getting color
 char *get_color(int id)
 {
 
@@ -286,6 +305,7 @@ char *get_color(int id)
     return color;
 }
 
+// functions for outputting
 void output_sequence(FILE *fp2, int *seq, int seq_num)
 {
 
@@ -296,6 +316,8 @@ void output_sequence(FILE *fp2, int *seq, int seq_num)
     }
     fprintf(fp2, "\n");
 }
+
+// function for outputting header
 void output_header(FILE *fp2, int *header)
 {
 
@@ -313,6 +335,8 @@ void output_header(FILE *fp2, int *header)
     }
     fprintf(fp2, "\n");
 }
+
+// function for outputting data
 void output_data(FILE *fp2, int **data)
 {
 
@@ -347,18 +371,32 @@ void output_data(FILE *fp2, int **data)
         fprintf(fp2, "\n");
     }
 }
+
+// function for outputting ID
 void output_id(FILE *fp2, int ID)
 {
 
     fprintf(fp2, "\tValue:\n");
     fprintf(fp2, "\t\t%d\n", ID);
 }
+
+// function for outputting color
 void output_color(FILE *fp2, char *color)
 {
     fprintf(fp2, "\tColor:\n");
     fprintf(fp2, "\t\t%s\n\n", color);
 }
 
+// function for freeing arrays
+void free_arrays(int *seq, int *header, int **data)
+{
+
+    free(seq);
+    free(header);
+    free_data(data);
+}
+
+// function for freeing data
 void free_data(int **data)
 {
 
@@ -368,12 +406,4 @@ void free_data(int **data)
         free(data[i]);
     }
     free(data);
-}
-
-void free_arrays(int *seq, int *header, int **data)
-{
-
-    free(seq);
-    free(header);
-    free_data(data);
 }
