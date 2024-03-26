@@ -76,7 +76,6 @@ int main(int argc, char *argv[])
 
         char output_filename[MAX_FILENAME_LEN];
         create_output_filename(argv[1], output_filename);
-        printf("%s", output_filename);
 
         while (!feof(fp)) // Loop until end of file (feof)
         {
