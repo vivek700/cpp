@@ -35,23 +35,7 @@ void output_color(FILE *fp2, char *color);
 void free_data(int **data);
 void free_arrays(int *seq, int *header, int **data);
 
-void create_output_filename(char *input_filename, char output_filename[MAX_FILENAME_LEN])
-{
-    int len = strlen(input_filename);
-
-    char *dot = strchr(input_filename, '.');
-    if (dot != NULL)
-    {
-        strncpy(output_filename, input_filename, dot - input_filename);
-    }
-    else
-    {
-        strncpy(output_filename, input_filename, len);
-    }
-
-    strncat(output_filename, ".out", MAX_FILENAME_LEN - 1);
-    output_filename[MAX_FILENAME_LEN - 1] = '\0';
-}
+void create_output_filename(char *input_filename, char output_filename[MAX_FILENAME_LEN]);
 
 int main(int argc, char *argv[])
 {
@@ -93,7 +77,7 @@ int main(int argc, char *argv[])
                 FILE *fp2 = fopen(output_filename, "a");
                 if (fp2 == NULL)
                 {
-                    printf("Error: Could not open %s for writing.\n", "rfid_data_1.out");
+                    printf("Error: Could not open %s for writing.\n", output_filename);
                     exit(3);
                 }
                 output_sequence(fp2, sequence, line_count);
@@ -430,4 +414,22 @@ void free_data(int **data)
         free(data[i]);
     }
     free(data);
+}
+
+void create_output_filename(char *input_filename, char output_filename[MAX_FILENAME_LEN])
+{
+    int len = strlen(input_filename);
+
+    char *dot = strchr(input_filename, '.');
+    if (dot != NULL)
+    {
+        strncpy(output_filename, input_filename, dot - input_filename);
+    }
+    else
+    {
+        strncpy(output_filename, input_filename, len);
+    }
+
+    strncat(output_filename, ".out", MAX_FILENAME_LEN - 1);
+    output_filename[MAX_FILENAME_LEN - 1] = '\0';
 }
